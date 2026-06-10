@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reuseable global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // AGENTS COLLECTION
+    match /agents/{agentId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && 
+        incoming().name.size() > 0 && 
+        incoming().name.size() <= 200 && 
+        incoming().status in ["Active", "Inactive", "Draft"];
+      allow delete: if isSignedIn();
+    }
+
+    // LEADS COLLECTION
+    match /leads/{leadId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() &&
+        incoming().name.size() > 0 &&
+        incoming().name.size() <= 200 &&
+        incoming().phone.size() > 0 &&
+        incoming().status in ["Nuevo", "Contactado", "Cita Agendada", "Especial", "Perdido"];
+      allow delete: if isSignedIn();
+    }
+
+    // CONVERSATIONS COLLECTION
+    match /conversations/{convId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() &&
+        incoming().status in ["Open", "Closed", "PendingHuman"];
+      allow delete: if isSignedIn();
+    }
+
+    // APPOINTMENTS COLLECTION
+    match /appointments/{apptId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() &&
+        incoming().channel in ["Google Calendar", "Outlook"] &&
+        incoming().status in ["Agendada", "Cancelada", "Completada"];
+      allow delete: if isSignedIn();
+    }
+
+    // USERS COLLECTION (Prohibits identity spoofing)
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == userId &&
+        incoming().role in ["Admin", "Supervisor", "Agent"];
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // NOTIFICATIONS COLLECTION
+    match /notifications/{notId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() &&
+        incoming().type in ["urgent", "lead", "info"];
+      allow delete: if isSignedIn();
+    }
+  }
+}

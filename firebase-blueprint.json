@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "agent": {
+      "title": "Agent",
+      "description": "WhatsApp chatbot agent configuration and business training knowledge",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "status": { "type": "string", "enum": ["Active", "Inactive", "Draft"] },
+        "trainingData": { "type": "string", "description": "Business training input or prompt details" },
+        "language": { "type": "string" },
+        "crmWebhookUrl": { "type": "string" },
+        "targetAudience": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "status", "trainingData"]
+    },
+    "lead": {
+      "title": "Lead",
+      "description": "Potential client captured during chatbot interactions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "status": { "type": "string", "enum": ["Nuevo", "Contactado", "Cita Agendada", "Especial", "Perdido"] },
+        "notes": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "agentId": { "type": "string" },
+        "score": { "type": "integer" }
+      },
+      "required": ["id", "name", "phone", "status"]
+    },
+    "conversation": {
+      "title": "Conversation",
+      "description": "WhatsApp chat interaction history with potential clients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "leadId": { "type": "string" },
+        "agentId": { "type": "string" },
+        "lastMessageText": { "type": "string" },
+        "lastMessageTime": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Open", "Closed", "PendingHuman"] },
+        "messages": {
+          "type": "array",
+          "description": "Historical message logs since inception code snippet"
+        }
+      },
+      "required": ["id", "leadId", "agentId", "status"]
+    },
+    "appointment": {
+      "title": "Appointment",
+      "description": "Schedules synced with external calendars like Google Calendar or Outlook",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "leadId": { "type": "string" },
+        "leadName": { "type": "string" },
+        "dateTime": { "type": "string", "format": "date-time" },
+        "channel": { "type": "string", "enum": ["Google Calendar", "Outlook"] },
+        "status": { "type": "string", "enum": ["Agendada", "Cancelada", "Completada"] },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "leadId", "dateTime", "channel", "status"]
+    },
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "Platform systems user accounts with custom permission roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin", "Supervisor", "Agent"] },
+        "permissions": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "role"]
+    },
+    "notification": {
+      "title": "Notification",
+      "description": "In-app and real-time push alert events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["urgent", "lead", "info"] },
+        "read": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "message", "type", "read"]
+    }
+  },
+  "firestore": {
+    "agents": {
+      "schema": "agent",
+      "description": "Collection of chatbot configurations"
+    },
+    "leads": {
+      "schema": "lead",
+      "description": "Collection of captured leads"
+    },
+    "conversations": {
+      "schema": "conversation",
+      "description": "Root collection tracking customer chat transcripts"
+    },
+    "appointments": {
+      "schema": "appointment",
+      "description": "Unified calendar bookings"
+    },
+    "users": {
+      "schema": "userProfile",
+      "description": "Enterprise platform user profiles"
+    },
+    "notifications": {
+      "schema": "notification",
+      "description": "Alert logs and system events"
+    }
+  }
+}

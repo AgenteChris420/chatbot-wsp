@@ -1,0 +1,1 @@
+{"name":"Agente Bot Talca","description":"WhatsApp chatbot management platform with AI training, lead management, appt scheduling, roles and real-time metrics.","requestFramePermissions":["camera","microphone","geolocation"],"majorCapabilities":["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]}

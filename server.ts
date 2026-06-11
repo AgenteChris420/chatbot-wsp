@@ -619,7 +619,22 @@ Genera ÚNICAMENTE el texto que el agente debe responder por WhatsApp, sin metad
 
 // Setup server and integrate client-side
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  // Determine environment
+  const isProdEnv = process.env.NODE_ENV === "production";
+  const isCompiled = __filename.endsWith("server.cjs");
+  const useProductionMode = isProdEnv || isCompiled;
+
+  console.log(`[Server Setup] Starting server in ${useProductionMode ? 'PRODUCTION' : 'DEVELOPMENT'} mode.`);
+  console.log(`[Server Setup] Environment variables: NODE_ENV=${process.env.NODE_ENV || 'undefined'}, isCompiled=${isCompiled}`);
+
+  // General request logging middleware
+  app.use((req, res, next) => {
+    console.log(`[HTTP Request] ${req.method} ${req.url}`);
+    next();
+  });
+
+  if (!useProductionMode) {
+    console.log("[Server Setup] Initializing Vite Dev Server...");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -627,21 +642,48 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+    console.log(`[Server Setup] Production mode: Serving static files from distPath="${distPath}"`);
+    
+    // Check if dist directory and index.html exist
+    const fs = require('fs');
+    if (!fs.existsSync(distPath)) {
+      console.error(`[Server Setup ERROR] The distribution folder "${distPath}" does NOT exist! Make sure to run "npm run build" first.`);
+    } else {
+      console.log(`[Server Setup] Distribution folder exists. Contents:`, fs.readdirSync(distPath));
+      const assetsPath = path.join(distPath, 'assets');
+      if (fs.existsSync(assetsPath)) {
+        console.log(`[Server Setup] Assets folder exists. Contents:`, fs.readdirSync(assetsPath));
+      } else {
+        console.warn(`[Server Setup WARNING] Assets folder does NOT exist at "${assetsPath}"!`);
+      }
+    }
+
+    // Static files middleware with explicit header setting and fallback warning
     app.use(express.static(distPath, {
       setHeaders: (res, filePath) => {
+        console.log(`[Static File Served] Path: ${filePath}`);
         if (filePath.endsWith('.js')) {
-          res.setHeader('Content-Type', 'application/javascript');
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+          console.log(`[Static File Content-Type Set] application/javascript for ${path.basename(filePath)}`);
         } else if (filePath.endsWith('.css')) {
-          res.setHeader('Content-Type', 'text/css');
+          res.setHeader('Content-Type', 'text/css; charset=utf-8');
+          console.log(`[Static File Content-Type Set] text/css for ${path.basename(filePath)}`);
         }
       }
     }));
+
+    // Wildcard fallback
     app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      const indexPath = path.join(distPath, 'index.html');
+      if (!fs.existsSync(indexPath)) {
+        console.error(`[Server Setup ERROR] index.html not found at "${indexPath}" for fallback route!`);
+        return res.status(404).send("Application files not found. Please build the application.");
+      }
+      res.sendFile(indexPath);
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  app.listen(Number(PORT), "0.0.0.0", () => {
     console.log(`Server fully operational on port ${PORT}`);
   });
 }

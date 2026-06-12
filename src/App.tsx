@@ -462,7 +462,7 @@ export default function App() {
               }`}
             >
               <Calendar className="w-4 h-4 shrink-0" />
-              <span>Schedules y Agenda</span>
+              <span>Agendas y horarios</span>
             </button>
 
             <button
@@ -531,7 +531,7 @@ export default function App() {
                 {activeTab === 'agents' && 'Entrenamiento de Agente IA'}
                 {activeTab === 'leads' && 'Histórico de Leads Capturados'}
                 {activeTab === 'chats' && 'Central de Chats Activos'}
-                {activeTab === 'calendar' && 'Calendario y Citas Agendadas'}
+                {activeTab === 'calendar' && 'Agendas y horarios'}
                 {activeTab === 'roles' && 'Roles y Permisos de Acceso'}
                 {activeTab === 'meta' && 'Conexión con Meta WhatsApp Business'}
               </h2>

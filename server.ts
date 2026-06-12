@@ -753,7 +753,7 @@ Genera ÚNICAMENTE el texto que el agente debe responder por WhatsApp, sin metad
 async function startServer() {
   // Determine environment
   const isProdEnv = process.env.NODE_ENV === "production";
-  const isCompiled = __filename.endsWith("server.cjs");
+  const isCompiled = typeof __filename !== 'undefined' && __filename.endsWith("server.cjs");
   const useProductionMode = isProdEnv || isCompiled;
 
   console.log(`[Server Setup] Starting server in ${useProductionMode ? 'PRODUCTION' : 'DEVELOPMENT'} mode.`);

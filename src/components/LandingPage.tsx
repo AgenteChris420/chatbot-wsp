@@ -84,14 +84,14 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white relative overflow-hidden pt-20">
       {/* Background gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[150px] pointer-events-none"></div>
       <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-600/5 blur-[130px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] rounded-full bg-indigo-600/10 blur-[150px] pointer-events-none"></div>
 
       {/* Header / Navbar */}
-      <header className="border-b border-slate-900 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-slate-900 bg-slate-950/70 backdrop-blur-md fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-lg text-white">
@@ -172,7 +172,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
         </div>
 
         {/* Right WhatsApp Simulator */}
-        <div id="simulator" className="lg:col-span-5 w-full flex justify-center">
+        <div id="simulator" className="lg:col-span-5 w-full flex justify-center scroll-mt-24">
           <div className="w-full max-w-[390px] h-[580px] bg-slate-950 rounded-[40px] p-3 border-[6px] border-slate-850 shadow-2xl shadow-blue-900/10 flex flex-col relative overflow-hidden">
             {/* Camera notch simulation */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-5 bg-slate-950 rounded-full z-20"></div>
@@ -247,7 +247,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
       </section>
 
       {/* Features Grid Section */}
-      <section id="features" className="bg-slate-950/40 border-y border-slate-900/60 py-24 relative">
+      <section id="features" className="bg-slate-950/40 border-y border-slate-900/60 py-24 relative scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 text-center space-y-16">
           <div className="space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
@@ -307,7 +307,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 max-w-7xl mx-auto px-6 text-center space-y-16">
+      <section id="pricing" className="py-24 max-w-7xl mx-auto px-6 text-center space-y-16 scroll-mt-24">
         <div className="space-y-4 max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Planes de Suscripción a tu Medida

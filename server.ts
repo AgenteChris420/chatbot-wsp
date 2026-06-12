@@ -183,6 +183,92 @@ function getGeminiClient() {
 // Configurable verification token
 let whatsappVerifyToken = "WhatsAppBotProToken2026";
 
+// Helper to sync lead details with HubSpot CRM
+async function pushLeadToHubSpot(lead: any) {
+  const token = process.env.HUBSPOT_ACCESS_TOKEN;
+  if (!token || token.trim() === "") {
+    console.log("[HubSpot Sync] Token no configurado. Omitiendo.");
+    return { success: false, warning: "Token no configurado" };
+  }
+
+  let firstName = lead.name;
+  let lastName = "";
+  const nameParts = lead.name.trim().split(/\s+/);
+  if (nameParts.length > 1) {
+    firstName = nameParts[0];
+    lastName = nameParts.slice(1).join(" ");
+  }
+
+  const payload = {
+    properties: {
+      email: lead.email,
+      firstname: firstName,
+      lastname: lastName,
+      phone: lead.phone,
+      description: lead.notes || ""
+    }
+  };
+
+  try {
+    console.log(`[HubSpot Sync] Registrando en HubSpot: ${lead.email}...`);
+    const response = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data: any = await response.json();
+
+    if (response.status === 409 || (data.category === "CONFLICT" && data.message)) {
+      console.log(`[HubSpot Sync] Conflicto de duplicado detectado. Intentando actualizar...`);
+      const match = data.message.match(/Existing ID:\s*(\d+)/i);
+      const existingId = match ? match[1] : null;
+
+      if (existingId) {
+        console.log(`[HubSpot Sync] Actualizando contacto existente ID: ${existingId}`);
+        const updateResponse = await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${existingId}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            properties: {
+              firstname: firstName,
+              lastname: lastName,
+              phone: lead.phone,
+              description: lead.notes || ""
+            }
+          })
+        });
+
+        if (updateResponse.ok) {
+          console.log(`[HubSpot Sync] Contacto actualizado con éxito.`);
+          return { success: true, action: "updated", id: existingId };
+        } else {
+          const updateErr = await updateResponse.json();
+          console.error("[HubSpot Sync Error] Fallo al actualizar:", updateErr);
+          return { success: false, error: updateErr };
+        }
+      }
+    }
+
+    if (response.ok) {
+      console.log(`[HubSpot Sync] Contacto creado con éxito. ID: ${data.id}`);
+      return { success: true, action: "created", id: data.id };
+    } else {
+      console.error("[HubSpot Sync Error] Fallo al crear contacto:", data);
+      return { success: false, error: data };
+    }
+  } catch (error) {
+    console.error("[HubSpot Sync Error] Excepción al sincronizar:", error);
+    return { success: false, error: String(error) };
+  }
+}
+
 // 1. Health Endpoint
 app.get("/api/health", (req, res) => {
   res.json({ status: "healthy", timestamp: new Date().toISOString() });
@@ -465,6 +551,11 @@ app.post("/api/whatsapp", async (req, res) => {
       });
     }
 
+    // Sync with HubSpot in background
+    pushLeadToHubSpot(existingLead).catch(e => {
+      console.error("[WhatsApp Webhook] Fallo en la sincronización automática con HubSpot:", e);
+    });
+
     return res.status(200).json({
       status: "success",
       event: "message_processed",
@@ -526,25 +617,49 @@ app.post("/api/auth/login", (req, res) => {
   }
 });
 
-// 4. API Simulation triggers CRM Existing systems integrations
-app.post("/api/crm/push", (req, res) => {
-  const { lead, webhookUrl } = req.body;
+// 4. Sincronización con HubSpot CRM (Manual)
+app.post("/api/crm/push", async (req, res) => {
+  const { lead } = req.body;
   if (!lead) {
     return res.status(400).json({ error: "No lead provided" });
   }
-  console.log(`[CRM INTEGRATION] Pushing lead ${lead.name} to webhook: ${webhookUrl || 'Default CRM'}`);
-  res.json({
-    status: "Integrated",
-    message: `Lead ${lead.name} sincronizado exitosamente de forma encriptada SHA-256.`,
-    sentData: {
-      id: lead.id,
-      name: lead.name,
-      email: lead.email,
-      phone: lead.phone,
-      crmScore: lead.score,
-      origin: "WhatsApp Integration Gateway"
-    }
-  });
+
+  const token = process.env.HUBSPOT_ACCESS_TOKEN;
+  if (!token || token.trim() === "") {
+    console.log(`[CRM INTEGRATION] Token HubSpot no configurado. Simulando registro para ${lead.name}.`);
+    return res.json({
+      status: "Integrated",
+      message: `[Simulación] Cliente ${lead.name} registrado con éxito (Token HUBSPOT_ACCESS_TOKEN no configurado en secretos).`,
+      sentData: {
+        id: lead.id,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        crmScore: lead.score,
+        origin: "WhatsApp Integration Simulator"
+      }
+    });
+  }
+
+  const result = await pushLeadToHubSpot(lead);
+  if (result.success) {
+    return res.json({
+      status: "Integrated",
+      message: `Cliente ${lead.name} sincronizado con éxito en HubSpot (${result.action === 'created' ? 'Creado nuevo' : 'Actualizado existente'}).`,
+      sentData: {
+        id: result.id,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        origin: "HubSpot CRM Direct Integration"
+      }
+    });
+  } else {
+    return res.status(500).json({
+      error: "Error al sincronizar con HubSpot",
+      details: result.error || result.warning
+    });
+  }
 });
 
 // 5. Intelligent Gemini powered Chat simulation endpoint

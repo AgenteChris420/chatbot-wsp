@@ -509,6 +509,23 @@ app.post("/api/save", (req, res) => {
   }
 });
 
+// POST Endpoint to authenticate admin user
+app.post("/api/auth/login", (req, res) => {
+  const { username, password } = req.body;
+  const expectedUsername = process.env.ADMIN_USERNAME || "admin";
+  const expectedPassword = process.env.ADMIN_PASSWORD || "admin000";
+
+  console.log(`[Auth API] Intento de login para usuario: "${username}"`);
+
+  if (username === expectedUsername && password === expectedPassword) {
+    console.log(`[Auth API Success] Login exitoso para "${username}"`);
+    return res.json({ success: true, token: "session-active-token" });
+  } else {
+    console.warn(`[Auth API Warning] Login fallido para "${username}"`);
+    return res.status(401).json({ success: false, error: "Usuario o contraseña incorrectos." });
+  }
+});
+
 // 4. API Simulation triggers CRM Existing systems integrations
 app.post("/api/crm/push", (req, res) => {
   const { lead, webhookUrl } = req.body;

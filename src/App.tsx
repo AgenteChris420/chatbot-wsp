@@ -33,6 +33,13 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  // Security Login barrier state (username & password)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => sessionStorage.getItem('isAuthenticated') === 'true');
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginSubmitting, setLoginSubmitting] = useState(false);
+
   // Core state synced with sever
   const [agents, setAgents] = useState<Agent[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -215,6 +222,43 @@ export default function App() {
     }
   };
 
+  const handleLocalLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    setLoginSubmitting(true);
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: loginUsername, password: loginPassword })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('isAuthenticated', 'true');
+      } else {
+        setLoginError(data.error || 'Credenciales inválidas.');
+      }
+    } catch (err) {
+      console.error(err);
+      setLoginError('Error de red al intentar iniciar sesión.');
+    } finally {
+      setLoginSubmitting(false);
+    }
+  };
+
+  const handleLocalLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('isAuthenticated');
+    setLoginUsername('');
+    setLoginPassword('');
+  };
+
+  const handleSystemLogout = async () => {
+    handleLocalLogout();
+    await handleSignOut();
+  };
+
   const handleMarkAllNotificationsRead = () => {
     const readNots = notifications.map(n => ({ ...n, read: true }));
     setNotifications(readNots);
@@ -223,6 +267,79 @@ export default function App() {
 
   // Count unread notifications
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  if (!isAuthenticated) {
+    return (
+      <div className="h-screen w-screen bg-slate-950 flex items-center justify-center overflow-hidden antialiased font-sans relative">
+        {/* Dynamic Abstract Background shapes */}
+        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none"></div>
+        
+        <div className="w-full max-w-md p-8 bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-800/80 shadow-2xl z-10 flex flex-col items-center">
+          {/* Logo Header */}
+          <div className="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 mb-4 animate-pulse">
+            <Bot className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight text-white mb-1">Panel de Control</h2>
+          <p className="text-xs text-slate-450 mb-8 font-mono">Agente-Bot WhatsApp Talca</p>
+
+          <form onSubmit={handleLocalLogin} className="w-full space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono" htmlFor="username">
+                Usuario
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={loginUsername}
+                onChange={(e) => setLoginUsername(e.target.value)}
+                placeholder="Ingresa tu usuario"
+                required
+                className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all font-sans"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono" htmlFor="password">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all font-sans"
+              />
+            </div>
+
+            {loginError && (
+              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs px-4 py-2.5 rounded-xl flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loginSubmitting}
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white rounded-xl text-sm font-semibold transition-all cursor-pointer shadow-lg shadow-blue-500/15 flex items-center justify-center gap-2"
+            >
+              {loginSubmitting ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              ) : (
+                <>
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Acceder al Sistema</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-screen bg-slate-50 text-slate-900 flex flex-col overflow-hidden antialiased">
@@ -462,7 +579,7 @@ export default function App() {
                     <span className="text-[9px] text-slate-450 font-mono font-medium">{userRole}</span>
                   </div>
                   <button 
-                    onClick={handleSignOut}
+                    onClick={handleSystemLogout}
                     className="p-2 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-400 rounded-lg transition-all cursor-pointer"
                     title="Cerrar sesión"
                   >

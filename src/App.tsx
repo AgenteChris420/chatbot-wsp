@@ -24,6 +24,7 @@ import ConversationLogs from './components/ConversationLogs';
 import CalendarScheduler from './components/CalendarScheduler';
 import UserRoles from './components/UserRoles';
 import WhatsAppMetaConnection from './components/WhatsAppMetaConnection';
+import LandingPage from './components/LandingPage';
 
 // Import our Firestore and Firebase Auth configurations
 import { db, auth, testConnection, handleFirestoreError } from './firebase';
@@ -39,6 +40,23 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginSubmitting, setLoginSubmitting] = useState(false);
+
+  // SPA Routing state ('landing' or 'app')
+  const [view, setView] = useState<'landing' | 'app'>(() => window.location.pathname.startsWith('/app') ? 'app' : 'landing');
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setView(window.location.pathname.startsWith('/app') ? 'app' : 'landing');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (newView: 'landing' | 'app') => {
+    const path = newView === 'app' ? '/app' : '/';
+    window.history.pushState(null, '', path);
+    setView(newView);
+  };
 
   // Core state synced with sever
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -252,6 +270,7 @@ export default function App() {
     sessionStorage.removeItem('isAuthenticated');
     setLoginUsername('');
     setLoginPassword('');
+    navigateTo('landing');
   };
 
   const handleSystemLogout = async () => {
@@ -267,6 +286,10 @@ export default function App() {
 
   // Count unread notifications
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  if (view === 'landing') {
+    return <LandingPage onGoToApp={() => navigateTo('app')} />;
+  }
 
   if (!isAuthenticated) {
     return (
@@ -370,7 +393,10 @@ export default function App() {
         {/* Navigation Sidebar Panel (Full height style matching Professional Polish) */}
         <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-xl shrink-0">
           {/* Brand header */}
-          <div className="p-6 border-b border-slate-800 flex items-center space-x-3">
+          <div 
+            onClick={() => navigateTo('landing')}
+            className="p-6 border-b border-slate-800 flex items-center space-x-3 cursor-pointer hover:bg-slate-800/40 transition"
+          >
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-lg text-white">W</div>
             <h1 className="text-lg font-bold tracking-tight text-white">WhatsAppBot <span className="text-blue-400">Pro</span></h1>
           </div>

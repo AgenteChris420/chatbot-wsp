@@ -247,7 +247,7 @@ export default function Dashboard({ leads, agents, conversations, appointments }
           <Bot className="w-10 h-10 text-blue-600 bg-blue-50 p-2.5 rounded-xl border border-blue-100" />
           <div>
             <h4 className="text-sm font-semibold text-gray-900">Sincronización Escalable a Sistemas de Producción</h4>
-            <p className="text-xs text-gray-500">Este panel simula llamadas en baja latencia. Puedes exportar informes detallados de leads capturados a CSV.</p>
+            <p className="text-xs text-gray-500">Este panel simula llamadas en baja latencia. Puedes exportar informes detallados de clientes capturados a CSV.</p>
           </div>
         </div>
         <div className="text-xs font-mono text-gray-400">

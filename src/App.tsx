@@ -438,7 +438,7 @@ export default function App() {
               }`}
             >
               <Users className="w-4 h-4 shrink-0" />
-              <span>Leads Capturados</span>
+              <span>Clientes Capturados</span>
             </button>
 
             <button
@@ -529,7 +529,7 @@ export default function App() {
               <h2 className="text-[16px] font-semibold text-slate-800 tracking-tight">
                 {activeTab === 'kpis' && 'Métricas de Rendimiento'}
                 {activeTab === 'agents' && 'Entrenamiento de Agente IA'}
-                {activeTab === 'leads' && 'Histórico de Leads Capturados'}
+                {activeTab === 'leads' && 'Histórico de Clientes Capturados'}
                 {activeTab === 'chats' && 'Central de Chats Activos'}
                 {activeTab === 'calendar' && 'Agendas y horarios'}
                 {activeTab === 'roles' && 'Roles y Permisos de Acceso'}

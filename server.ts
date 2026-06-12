@@ -20,7 +20,7 @@ let database = {
       status: "Active",
       language: "Español",
       quickReplies: "Ver Propiedades, Agendar Visita, Hablar con Humano",
-      crmWebhookUrl: "https://hook.us.services/crm-pipeline-inmobiliaria",
+      crmWebhookUrl: "https://api.hubapi.com/crm/v3/objects/contacts",
       trainingData: `Eres Elena, la asistente virtual experta de Inmobiliaria Express.
 Nuestra empresa vende y alquila apartamentos modernos en la zona central.
 Tenemos 3 proyectos principales:

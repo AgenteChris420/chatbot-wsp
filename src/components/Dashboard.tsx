@@ -206,7 +206,6 @@ export default function Dashboard({ leads, agents, conversations, appointments }
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-md font-semibold text-gray-900">Monitoreo del Sistema</h3>
-              <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">Seguridad E2EE</span>
             </div>
             <p className="text-xs text-gray-500 mb-5">Operatividad en vivo y transferencias de chats de WhatsApp.</p>
             

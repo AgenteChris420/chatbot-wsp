@@ -598,14 +598,7 @@ export default function App() {
                     <LogOut className="w-4 h-4" />
                   </button>
                 </div>
-              ) : (
-                <button 
-                  onClick={handleGoogleLogin}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-blue-700 transition cursor-pointer"
-                >
-                  Conectar Cloud
-                </button>
-              )}
+              ) : null}
 
             </div>
           </header>

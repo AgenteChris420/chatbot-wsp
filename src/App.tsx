@@ -13,8 +13,7 @@ import {
   LogOut,
   User,
   ExternalLink,
-  Smartphone,
-  Globe
+  Smartphone
 } from 'lucide-react';
 import { Agent, Lead, Conversation, Appointment, UserProfile, Notification, DashboardMetrics } from './types';
 import Dashboard from './components/Dashboard';
@@ -23,7 +22,6 @@ import LeadsPanel from './components/LeadsPanel';
 import ConversationLogs from './components/ConversationLogs';
 import CalendarScheduler from './components/CalendarScheduler';
 import UserRoles from './components/UserRoles';
-import WhatsAppMetaConnection from './components/WhatsAppMetaConnection';
 import LandingPage from './components/LandingPage';
 
 // Import our Firestore and Firebase Auth configurations
@@ -414,7 +412,7 @@ export default function App() {
               }`}
             >
               <BarChart3 className="w-4 h-4 shrink-0" />
-              <span>Métricas y Funnel</span>
+              <span>Métricas y rendimiento</span>
             </button>
 
             <button
@@ -477,19 +475,7 @@ export default function App() {
               <span>Roles de Acceso</span>
             </button>
 
-            {isAdmin && (
-              <button
-                onClick={() => { setActiveTab('meta'); setNotificationsOpen(false); }}
-                className={`flex items-center gap-3 w-full p-3 text-sm font-medium rounded-lg transition-all text-left cursor-pointer ${
-                  activeTab === 'meta' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`}
-              >
-                <Globe className="w-4 h-4 shrink-0" />
-                <span>Conexión Meta WhatsApp</span>
-              </button>
-            )}
+
 
             {/* Current entity container visual decoration */}
             <div className="pt-4 mt-6 border-t border-slate-800 space-y-1 px-3">
@@ -690,13 +676,7 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'meta' && isAdmin && (
-              <WhatsAppMetaConnection 
-                agents={agents}
-                onSaveAgents={handleSaveAgents}
-                onAddNotification={handleAddNotification}
-              />
-            )}
+
 
           </div>
 

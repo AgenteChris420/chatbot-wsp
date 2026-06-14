@@ -55,15 +55,41 @@ export default function AgentTraining({ agents, onSaveAgents, onAddNotification 
     const dateStr = new Date().toLocaleDateString();
     const lowerName = fileName.toLowerCase();
 
-    if (lowerName.includes("precio") || lowerName.includes("tarifa") || lowerName.includes("cost") || lowerName.includes("dental")) {
+    if (
+      lowerName.includes("resonancia") ||
+      lowerName.includes("gravitymed") ||
+      lowerName.includes("medico") ||
+      lowerName.includes("arancel") ||
+      lowerName.includes("valor") ||
+      lowerName.includes("precio") ||
+      lowerName.includes("tarifa") ||
+      lowerName.includes("cost") ||
+      lowerName.includes("cerebral") ||
+      lowerName.includes("columna") ||
+      lowerName.includes("rodilla") ||
+      lowerName.includes("hombro") ||
+      lowerName.includes("abdomen")
+    ) {
       return `\n\n--- DOCUMENTO MEMORIA PDF: ${fileName} ---
 Fecha de Escaneo por IA: ${dateStr}
-Sección de Precios y Servicios Oficiales de la Empresa:
-- Limpieza Avanzada con Ultrasonido: $40.00 USD (Precio Certificado)
-- Blanqueamiento Dental LED Avanzado: $120.00 USD (Plan Promocional Vigente 2x1)
-- Resinas Odontológicas Estéticas: de $30 a $60 USD de acuerdo al daño.
-- Consulta de Caracterización inicial: $20.00 USD
-Políticas Tributarias: Todos los precios expresados están exentos de cargos ocultos. Las consultas posteriores a tratamientos urgentes son complementarias por 6 meses.`;
+GravityMed Talca - Tabla Oficial de Aranceles para Resonancia Magnética (2026)
+Dirección: Calle 2 norte 1334, Talca.
+
+EXAMEN | CÓDIGO FONASA | VALOR PARTICULAR | COPAGO FONASA (Nivel B/C/D)
+--------------------------------------------------------------------------
+Resonancia Magnética de Cerebro | 0405001 | $180.000 | $90.000
+Resonancia Magnética de Columna Cervical | 0405002 | $170.000 | $85.000
+Resonancia Magnética de Columna Dorsal | 0405003 | $170.000 | $85.000
+Resonancia Magnética de Columna Lumbar | 0405004 | $170.000 | $85.000
+Resonancia Magnética de Rodilla | 0405005 | $160.000 | $80.000
+Resonancia Magnética de Hombro | 0405006 | $165.000 | $82.500
+Resonancia Magnética de Abdomen y Pelvis | 0405007 | $220.000 | $110.000
+Resonancia Magnética Cerebral con Contraste | 0405008 | $240.000 | $120.000
+
+Instrucciones de Agendamiento:
+- Se requiere orden médica para realizar cualquier resonancia magnética.
+- Ayuno mínimo de 4 horas para exámenes con contraste.
+- Presentar RUT y credencial de Fonasa/Isapre al momento del ingreso.`;
     }
 
     if (lowerName.includes("manual") || lowerName.includes("politica") || lowerName.includes("guia") || lowerName.includes("regla") || lowerName.includes("venta")) {
@@ -75,12 +101,13 @@ Sección de Directrices sobre Clientes y Políticas:
 - Privacidad y Seguridad: El asesoramiento automatizado por WhatsApp cumple estrictas normativas SSL y políticas LOPD de protección de datos.`;
     }
 
+    // Default fallback - tailored to GravityMed center parameters
     return `\n\n--- DOCUMENTO MEMORIA PDF: ${fileName} ---
 Fecha de Escaneo por IA: ${dateStr}
 Definición de Valores Empresariales (${cleanName}):
-- Objetivo del Bot: Atender dudas con precisión comercial de bajo retardo técnico.
-- Respuestas Clave: Indicar promociones actuales, horarios flexibles (lunes a sábado de 9am a 7pm), y ubicar oficinas de inmediato.
-- Captura de Lead: Pedir Nombre Completo, Teléfono / WhatsApp y Correo Electrónico formalmente para agendar la cita.`;
+- Objetivo del Bot: Atender dudas con precisión comercial de bajo retardo técnico para resonancias magnéticas en GravityMed Talca.
+- Respuestas Clave: Indicar aranceles Fonasa/Particular, ubicación (calle 2 norte 1334, Talca) y horarios de atención (9:00 am a 19:00 pm).
+- Captura de Lead: Pedir Nombre, RUT, correo, teléfono y guardarlo en el CRM para agendar citas de resonancia.`;
   };
 
   const startFileScan = (file: File) => {

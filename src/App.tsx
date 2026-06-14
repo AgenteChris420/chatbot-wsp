@@ -395,8 +395,8 @@ export default function App() {
             onClick={() => navigateTo('landing')}
             className="p-6 border-b border-slate-800 flex items-center space-x-3 cursor-pointer hover:bg-slate-800/40 transition"
           >
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-lg text-white">W</div>
-            <h1 className="text-lg font-bold tracking-tight text-white">WhatsAppBot <span className="text-blue-400">Pro</span></h1>
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-lg text-white">B</div>
+            <h1 className="text-lg font-bold tracking-tight text-white">BOTMED</h1>
           </div>
 
           {/* Navigation Links */}
@@ -480,7 +480,7 @@ export default function App() {
             {/* Current entity container visual decoration */}
             <div className="pt-4 mt-6 border-t border-slate-800 space-y-1 px-3">
               <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500 block font-mono">Empresa Activa</span>
-              <p className="text-xs font-bold text-slate-202 truncate">Inmobiliaria Express & Corp</p>
+              <p className="text-xs font-bold text-slate-202 truncate">GravityMed Talca</p>
             </div>
           </nav>
 
@@ -680,7 +680,7 @@ export default function App() {
               <span>Cifrado AES-256</span>
               <span>Infraestructura Firebase</span>
             </div>
-            <div>© 2026 WhatsAppBot Suite - Conectado a Firestore Realtime</div>
+            <div>© 2026 BOTMED Suite - Conectado a Firestore Realtime</div>
           </footer>
 
         </main>

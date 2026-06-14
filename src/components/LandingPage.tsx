@@ -24,7 +24,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
   const [messages, setMessages] = useState<{ sender: 'client' | 'agent'; text: string; time: string }[]>([
     { 
       sender: 'agent', 
-      text: '¡Hola! 🏠 Soy Elena, la asistente virtual inteligente. ¿Cómo te llamas y en qué puedo ayudarte hoy?',
+      text: '¡Hola! 🩺 Soy Elena, la asistente virtual de GravityMed. ¿Cómo te llamas y en qué puedo ayudarte hoy?',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -84,7 +84,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white relative overflow-hidden pt-20">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden pt-20">
       {/* Background gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[150px] pointer-events-none"></div>
       <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-600/5 blur-[130px] pointer-events-none"></div>
@@ -95,10 +95,10 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-lg text-white">
-              W
+              B
             </div>
             <span className="text-lg font-bold tracking-tight text-white">
-              WhatsAppBot <span className="text-blue-500">Pro</span>
+              BOTMED
             </span>
           </div>
 
@@ -121,7 +121,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-24 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-6 lg:min-h-[calc(100vh-5rem)] lg:min-h-[620px] grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center py-12 lg:py-8">
         {/* Left marketing content */}
         <div className="lg:col-span-7 space-y-8 text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400 font-mono">
@@ -184,7 +184,7 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-slate-900 animate-pulse"></span>
               </div>
               <div className="flex-1 text-left">
-                <h4 className="text-xs font-bold text-white tracking-tight">Elena (Inmobiliaria)</h4>
+                <h4 className="text-xs font-bold text-white tracking-tight">Elena (GravityMed)</h4>
                 <p className="text-[10px] text-green-500 font-medium">Asistente IA • Activa</p>
               </div>
               <div className="p-1 rounded-full bg-slate-800/50 text-slate-400 text-[10px] font-bold font-mono px-2">
@@ -450,8 +450,8 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
       <footer className="border-t border-slate-900 py-12 bg-slate-950">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-medium space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-blue-600/20 rounded-lg flex items-center justify-center font-bold text-xs text-blue-500">W</div>
-            <span className="text-slate-400">© 2026 WhatsAppBot Pro. Todos los derechos reservados.</span>
+            <div className="w-6 h-6 bg-blue-600/20 rounded-lg flex items-center justify-center font-bold text-xs text-blue-500">B</div>
+            <span className="text-slate-400">© 2026 BOTMED. Todos los derechos reservados.</span>
           </div>
           <div className="flex space-x-6">
             <a href="#" className="hover:text-slate-300">Términos de Servicio</a>

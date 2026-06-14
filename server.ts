@@ -16,39 +16,68 @@ let database = {
   agents: [
     {
       id: "agent-1",
-      name: "Asistente Inmobiliaria (Elena)",
+      name: "Elena (GravityMed)",
       status: "Active",
       language: "Español",
-      quickReplies: "Ver Propiedades, Agendar Visita, Hablar con Humano",
+      quickReplies: "Exámenes y Precios, Horarios y Dirección, Agendar Examen, Hablar con Humano",
       crmWebhookUrl: "https://api.hubapi.com/crm/v3/objects/contacts",
-      trainingData: `Eres Elena, la asistente virtual experta de Inmobiliaria Express.
-Nuestra empresa vende y alquila apartamentos modernos en la zona central.
-Tenemos 3 proyectos principales:
-1. Palermo Suites: Apartamentos de 1 habitación desde $85,000 USD. Piscina, gimnasio, pet-friendly.
-2. Condominio El Roble: Casas familiares de 3 habitaciones desde $150,000 USD. Zona segura de alta plusvalía.
-3. Lofts Centro: Arriendos amoblados desde $600 USD al mes. Cerca de estaciones de metro.
+      trainingData: `Eres Elena, la asistente virtual experta del centro médico GravityMed.
+Ubicación: Calle 2 norte 1334, Talca.
+Horario de atención: Lunes a Domingo de 9:00 am a 19:00 pm.
+GravityMed es un centro de excelencia que ofrece servicios de exámenes de resonancia magnética.
 
-Tu objetivo es responder de manera amable, consisa y natural (como si chatearas por WhatsApp). 
-Reglas estrictas de comportamiento:
-1. NO inventes proyectos que no estén listados aquí.
-2. Si preguntan por financiamiento, di que ofrecemos crédito directo con el 20% de enganche.
-3. Siempre intenta capturar su Nombre, Correo y WhatsApp de forma amigable para agendarles una visita guiada.
-4. Si te insisten mucho en hablar con un humano o tienen una queja compleja, di que transferirás la conversación al equipo de soporte de inmediato.`,
+Tu rol es entregar información detallada sobre los exámenes de resonancia magnética disponibles, sus indicaciones y sus valores.
+Los pacientes pueden optar por el valor FONASA (con copago/bono) o el valor Particular.
+
+Para agendar un examen, debes verificar la disponibilidad horaria del paciente y solicitar obligatoriamente los siguientes datos personales:
+1. Nombre completo
+2. RUT (Rol Único Tributario)
+3. Correo electrónico
+4. Teléfono de contacto
+
+Indica al paciente que apenas se complete el agendamiento del examen, se registrará en el sistema (CRM HubSpot) y se le enviará una notificación automática de confirmación.
+
+Aquí está la tabla oficial de precios y exámenes de resonancia magnética en GravityMed:
+- Resonancia Magnética de Cerebro / Cerebral: Particular: $180.000 CLP | FONASA: $90.000 CLP
+- Resonancia Magnética de Columna (Cervical / Dorsal / Lumbar): Particular: $170.000 CLP | FONASA: $85.000 CLP
+- Resonancia Magnética de Rodilla: Particular: $160.000 CLP | FONASA: $80.000 CLP
+- Resonancia Magnética de Hombro: Particular: $165.000 CLP | FONASA: $82.500 CLP
+- Resonancia Magnética de Abdomen / Pelvis: Particular: $220.000 CLP | FONASA: $110.000 CLP
+- Resonancia Magnética Cerebral con Contraste: Particular: $240.000 CLP | FONASA: $120.000 CLP
+
+Reglas de comportamiento y tono:
+- Responde siempre de manera muy empática, profesional y concisa (ideal para chat de WhatsApp).
+- Si el paciente desea agendar, pídele amablemente los datos personales que falten (Nombre, RUT, Correo, Teléfono de contacto).
+- Explícale que se le notificará inmediatamente al finalizar la reserva.`,
       createdAt: new Date().toISOString(),
       whatsappNumber: "+569 33207799",
       trainingFiles: [
         {
           id: "seed-file-1",
-          name: "catalogo_propiedades_palermo.pdf",
-          size: "1.42 MB",
-          uploadedAt: "01 jun, 11:30",
-          charCount: 420,
-          extractedText: `--- DOCUMENTO MEMORIA PDF: catalogo_propiedades_palermo.pdf ---
-Fecha de Escaneo por IA: 01/06/2026
-Proyectos Inmobiliaria Express 2026:
-- Palermo Suites: Apartamentos modernos con domótica. 1Rec, pet-friendly con piscina y gimnasio desde $85,000 USD.
-- Condominio El Roble: Casas inteligentes unifamiliares con portón de acceso controlado. Zona de alta plusvalía y seguridad 24/7.
-- Lofts Centro: Distribución moderna, amoblado completo para estudiantes o ejecutivos desde $600 USD al mes.`
+          name: "valores_resonancias_gravitymed.pdf",
+          size: "1.15 MB",
+          uploadedAt: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+          charCount: 780,
+          extractedText: `--- DOCUMENTO MEMORIA PDF: valores_resonancias_gravitymed.pdf ---
+Fecha de Escaneo por IA: 13/06/2026
+GravityMed Talca - Tabla Oficial de Aranceles para Resonancia Magnética (2026)
+Dirección: Calle 2 norte 1334, Talca.
+
+EXAMEN | CÓDIGO FONASA | VALOR PARTICULAR | COPAGO FONASA (Nivel B/C/D)
+--------------------------------------------------------------------------
+Resonancia Magnética de Cerebro | 0405001 | $180.000 | $90.000
+Resonancia Magnética de Columna Cervical | 0405002 | $170.000 | $85.000
+Resonancia Magnética de Columna Dorsal | 0405003 | $170.000 | $85.000
+Resonancia Magnética de Columna Lumbar | 0405004 | $170.000 | $85.000
+Resonancia Magnética de Rodilla | 0405005 | $160.000 | $80.000
+Resonancia Magnética de Hombro | 0405006 | $165.000 | $82.500
+Resonancia Magnética de Abdomen y Pelvis | 0405007 | $220.000 | $110.000
+Resonancia Magnética Cerebral con Contraste | 0405008 | $240.000 | $120.000
+
+Instrucciones de Agendamiento:
+- Se requiere orden médica para realizar cualquier resonancia magnética.
+- Ayuno mínimo de 4 horas para exámenes con contraste.
+- Presentar RUT y credencial de Fonasa/Isapre al momento del ingreso.`
         }
       ]
     }
@@ -56,33 +85,33 @@ Proyectos Inmobiliaria Express 2026:
   leads: [
     {
       id: "lead-1",
-      name: "Carlos Mendoza",
-      phone: "+52 55 1234 5678",
-      email: "carlos.men@gmail.com",
+      name: "Juan Pérez",
+      phone: "+56 9 1234 5678",
+      email: "juan.perez@gmail.com",
       status: "Cita Agendada",
-      notes: "Interesado en Palermo Suites, busca departamento de 1 recámara. Piso alto.",
+      notes: "RUT: 12.345.678-9. Interesado en Resonancia Lumbar por dolor de espalda agudo.",
       timestamp: new Date(Date.now() - 3600000 * 24).toISOString(),
       agentId: "agent-1",
       score: 5
     },
     {
       id: "lead-2",
-      name: "Sofía Castro",
-      phone: "+52 55 9876 5432",
-      email: "sofia.castro@outlook.com",
+      name: "María González",
+      phone: "+56 9 9876 5432",
+      email: "mgonzalez@outlook.com",
       status: "Contactado",
-      notes: "Interesada en alquilar un Loft amoblado en el Centro. Preguntó por la cercanía con estaciones del metro.",
+      notes: "Consulta por valor de resonancia cerebral con contraste. Tiene Fonasa.",
       timestamp: new Date(Date.now() - 3600000 * 12).toISOString(),
       agentId: "agent-1",
       score: 4
     },
     {
       id: "lead-3",
-      name: "Roberto Gómez",
-      phone: "+52 55 4567 8901",
-      email: "rgomez@yahoo.com",
+      name: "Andrés Silva",
+      phone: "+56 9 4567 8901",
+      email: "asilva@yahoo.com",
       status: "Nuevo",
-      notes: "Consulta directa iniciada vía WhatsApp. Pendiente agendar perfil de crédito.",
+      notes: "Preguntó por ubicación del centro en Talca y horarios.",
       timestamp: new Date().toISOString(),
       agentId: "agent-1",
       score: 3
@@ -93,29 +122,29 @@ Proyectos Inmobiliaria Express 2026:
       id: "conv-1",
       leadId: "lead-1",
       agentId: "agent-1",
-      lastMessageText: "Perfecto, agendado para mañana a las 4:00 PM. ¡Saludos!",
+      lastMessageText: "Perfecto, agendado para mañana a las 11:00 AM. ¡Saludos!",
       lastMessageTime: new Date(Date.now() - 3600000 * 24).toISOString(),
       status: "Open",
       messages: [
-        { id: "m1", text: "Hola, vi un anuncio sobre departamentos Palermo Suites.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 10).toISOString() },
-        { id: "m2", text: "¡Hola! Claro que sí, con gusto te ayudo. Los departamentos de Palermo Suites inician desde $85,000 USD y cuentan con piscina, gimnasio y son pet-friendly. ¿Te gustaría conocer disponibilidad o agendar una visita?", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 9).toISOString() },
-        { id: "m3", text: "Me interesa una visita. ¿Tiene elevador?", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 7).toISOString() },
-        { id: "m4", text: "Sí, todos nuestros edificios cuentan con elevadores inteligentes y de alta capacidad. Para agendar la visita guiada, ¿me compartirías tu correo y tu horario de preferencia?", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 6).toISOString() },
-        { id: "m5", text: "Sí, carlos.men@gmail.com. Mañana a las 4:00 PM puedo.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 3).toISOString() },
-        { id: "m6", text: "Perfecto, agendado para mañana a las 4:00 PM. ¡Saludos!", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 1).toISOString() }
+        { id: "m1", text: "Hola, necesito saber el valor de una resonancia de columna lumbar.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 10).toISOString() },
+        { id: "m2", text: "¡Hola! Claro que sí. En GravityMed, la resonancia de columna lumbar tiene un valor de $170.000 Particular y $85.000 con Fonasa. ¿Te gustaría agendar una hora?", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 9).toISOString() },
+        { id: "m3", text: "Sí, me sirve. Tengo Fonasa. ¿Tienen disponible mañana a las 11:00 AM?", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 7).toISOString() },
+        { id: "m4", text: "Sí, tenemos disponibilidad a esa hora. Para completar la reserva, por favor confírmame tu nombre completo, RUT, correo y teléfono.", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 6).toISOString() },
+        { id: "m5", text: "Juan Pérez, 12.345.678-9, juan.perez@gmail.com, +56912345678.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 3).toISOString() },
+        { id: "m6", text: "Perfecto, agendado para mañana a las 11:00 AM. ¡Saludos!", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 24 - 60000 * 1).toISOString() }
       ]
     },
     {
       id: "conv-2",
       leadId: "lead-2",
       agentId: "agent-1",
-      lastMessageText: "Excelente, ¿puede ir mi mascota conmigo? Es un perrito pequeño.",
+      lastMessageText: "Consulta de valor de resonancia cerebral con contraste. Tiene Fonasa.",
       lastMessageTime: new Date(Date.now() - 3600000 * 12).toISOString(),
       status: "PendingHuman",
       messages: [
-        { id: "m7", text: "Hola, vi el anuncio sobre los Lofts en el Centro amoblados.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 15).toISOString() },
-        { id: "m8", text: "¡Hola! Qué gusto saludarte, Sofía. Sí, de hecho los Lofts Centro están amoblados de forma moderna para estudiantes o profesionales, desde $600 USD al mes, muy cerca del metro. ¿Te gustaría agendar una videollamada de recorrido virtual?", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 12).toISOString() },
-        { id: "m9", text: "Excelente, ¿puede ir mi mascota conmigo? Es un perrito pequeño.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 10).toISOString() }
+        { id: "m7", text: "Hola, quisiera saber si tienen resonancia cerebral con contraste y qué precio tiene.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 15).toISOString() },
+        { id: "m8", text: "¡Hola, María! Sí, realizamos resonancia cerebral con contraste. El valor Particular es de $240.000 y con copago Fonasa es de $120.000. Recuerda que para este examen se requiere ayuno mínimo de 4 horas y orden médica. ¿Deseas buscar una hora para agendar?", sender: "agent", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 12).toISOString() },
+        { id: "m9", text: "Perfecto, deja consultar con mi médico la orden y les vuelvo a escribir.", sender: "client", timestamp: new Date(Date.now() - 3600000 * 12 - 60000 * 10).toISOString() }
       ]
     }
   ],
@@ -123,11 +152,11 @@ Proyectos Inmobiliaria Express 2026:
     {
       id: "appt-1",
       leadId: "lead-1",
-      leadName: "Carlos Mendoza",
-      dateTime: new Date(Date.now() + 3600000 * 16).toISOString().split('T')[0] + "T16:00:00.000Z",
+      leadName: "Juan Pérez",
+      dateTime: new Date(Date.now() + 3600000 * 16).toISOString().split('T')[0] + "T11:00:00.000Z",
       channel: "Google Calendar",
       status: "Agendada",
-      notes: "Palermo Suites Visualizing"
+      notes: "Resonancia Lumbar - Fonasa"
     }
   ],
   users: [
@@ -144,7 +173,7 @@ Proyectos Inmobiliaria Express 2026:
     {
       id: "not-1",
       title: "Alerta Urgente",
-      message: "El lead Sofía Castro ha solicitado hablar con un humano por dudas de la promoción.",
+      message: "El lead María González ha solicitado hablar con un humano por dudas de la promoción.",
       type: "urgent",
       read: false,
       timestamp: new Date().toISOString()
@@ -152,7 +181,7 @@ Proyectos Inmobiliaria Express 2026:
     {
       id: "not-2",
       title: "Nuevo Lead WhatsApp",
-      message: "Se ha capturado el número y correo de Roberto Gómez en Inmobiliaria Express.",
+      message: "Se ha capturado el número y correo de Andrés Silva en GravityMed.",
       type: "lead",
       read: true,
       timestamp: new Date(Date.now() - 3600000 * 2).toISOString()
@@ -267,6 +296,177 @@ async function pushLeadToHubSpot(lead: any) {
     console.error("[HubSpot Sync Error] Excepción al sincronizar:", error);
     return { success: false, error: String(error) };
   }
+}
+
+// Shared scheduler and entity extractor utilizing Gemini
+async function processSchedulingAndCRM(
+  incomingMessage: string,
+  historyMessages: { sender: string; text: string }[],
+  existingLead: any,
+  agentName: string,
+  trainingData: string,
+  language: string,
+  isWebhook: boolean
+): Promise<string | null> {
+  const ai = getGeminiClient();
+  let extractedData = {
+    name: null,
+    rut: null,
+    email: null,
+    phone: null,
+    intentToSchedule: false,
+    dateTime: null,
+    exam: null,
+    insurance: null
+  };
+
+  try {
+    const parsePrompt = `Analiza la conversación de WhatsApp entre un paciente y un asistente médico. Extrae los datos del paciente en formato JSON estricto.
+Historial completo de conversación:
+${historyMessages.map((m: any) => `${m.sender === 'client' ? 'Paciente' : 'Asistente'}: ${m.text}`).join("\n")}
+Paciente (último mensaje): ${incomingMessage}
+
+Genera ÚNICAMENTE un objeto JSON válido con las siguientes llaves (usa null si no se menciona o no está claro):
+{
+  "name": "Nombre completo extraído del paciente (solo si lo menciona explícitamente en el chat)",
+  "rut": "RUT chileno extraído (formato 12.345.678-9 o similar)",
+  "email": "Correo electrónico extraído",
+  "phone": "Teléfono de contacto extraído",
+  "intentToSchedule": true/false (solo si el paciente desea confirmar, coordinar o agendar un examen de resonancia en una fecha/hora específicas en el último mensaje)",
+  "dateTime": "Fecha y hora solicitada en formato ISO (ej. 2026-06-15T10:00:00.000Z) calculada a partir del mensaje si se define un slot de tiempo",
+  "exam": "Nombre del examen de resonancia magnética solicitado",
+  "insurance": "Fonasa" o "Particular"
+}
+Respuesta en JSON:`;
+
+    const parseResponse = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: parsePrompt,
+    });
+
+    const text = parseResponse.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      extractedData = { ...extractedData, ...parsed };
+    }
+  } catch (e) {
+    console.error("[Entity Extraction Error] Failed to parse entities:", e);
+  }
+
+  console.log("[Extraction Result] Extracted fields:", JSON.stringify(extractedData));
+
+  // Update lead information if extracted
+  let leadUpdated = false;
+  if (extractedData.name && extractedData.name !== existingLead.name && !extractedData.name.toLowerCase().includes("usuario") && !extractedData.name.toLowerCase().includes("simulado")) {
+    existingLead.name = extractedData.name;
+    leadUpdated = true;
+  }
+  if (extractedData.email && extractedData.email !== existingLead.email && !extractedData.email.includes("@whatsapp.com") && extractedData.email !== "cliente@empresa.com") {
+    existingLead.email = extractedData.email;
+    leadUpdated = true;
+  }
+  if (extractedData.phone && extractedData.phone !== existingLead.phone) {
+    existingLead.phone = extractedData.phone;
+    leadUpdated = true;
+  }
+  if (extractedData.rut) {
+    const rutLabel = `RUT: ${extractedData.rut}`;
+    if (!existingLead.notes.includes(rutLabel)) {
+      existingLead.notes = `${rutLabel}. ${existingLead.notes}`.trim();
+      leadUpdated = true;
+    }
+  }
+
+  // Force score update if they provide detailed data
+  if (leadUpdated) {
+    existingLead.score = Math.min(5, (existingLead.score || 3) + 1);
+  }
+
+  // Check if user is intending to schedule and we have a valid date/time
+  if (extractedData.intentToSchedule && extractedData.dateTime) {
+    const requestedTime = new Date(extractedData.dateTime);
+    
+    // Real-time availability check: verify if there is an overlapping appointment (within 45 minutes)
+    const isSlotBusy = database.appointments.some((appt: any) => {
+      const apptTime = new Date(appt.dateTime);
+      const diffMs = Math.abs(apptTime.getTime() - requestedTime.getTime());
+      return diffMs < 45 * 60 * 1000 && appt.status !== "Cancelada";
+    });
+
+    if (isSlotBusy) {
+      // Overlapping appointment detected: reject slot
+      const timeStr = requestedTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = requestedTime.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+      return `Lo lamento, pero el horario del *${dateStr}* a las *${timeStr}* ya está reservado por otro paciente. ¿Tendrías disponibilidad en otro horario entre las 9:00 y las 19:00?`;
+    }
+
+    // Check if required fields (Name, RUT, Email) are complete. If not, prompt for them
+    const missingFields = [];
+    const lowerName = existingLead.name.toLowerCase();
+    if (!existingLead.name || lowerName.includes("usuario") || lowerName.includes("simulado") || lowerName === "nuevo cliente manual") {
+      missingFields.push("Nombre Completo");
+    }
+    if (!existingLead.notes.includes("RUT:")) {
+      missingFields.push("RUT");
+    }
+    if (!existingLead.email || existingLead.email.includes("@whatsapp.com") || existingLead.email === "cliente@empresa.com") {
+      missingFields.push("Correo Electrónico");
+    }
+
+    if (missingFields.length > 0) {
+      const timeStr = requestedTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = requestedTime.toLocaleDateString('es-CL', { day: 'numeric', month: 'numeric', year: 'numeric' });
+      return `¡Tengo disponibilidad para tu examen de *Resonancia de ${extractedData.exam || 'Cerebro'}* el día *${dateStr}* a las *${timeStr}*! 📅\n\nPara poder confirmar y registrar tu reserva en el sistema, por favor indícame tu *${missingFields.join(", ")}*.`;
+    }
+
+    // Complete details are present! Schedule the appointment!
+    const apptId = "appt-" + Math.random().toString(36).substring(2, 9);
+    const newAppt = {
+      id: apptId,
+      leadId: existingLead.id,
+      leadName: existingLead.name,
+      dateTime: requestedTime.toISOString(),
+      channel: "Google Calendar" as const,
+      status: "Agendada" as const,
+      notes: `Resonancia: ${extractedData.exam || 'Cerebro'} - Previsión: ${extractedData.insurance || 'Particular'}`
+    };
+
+    database.appointments = [...database.appointments, newAppt];
+    existingLead.status = "Cita Agendada";
+    existingLead.score = 5;
+
+    // Trigger urgent notification on active admin dashboard
+    const notMsg = `Resonancia de ${extractedData.exam || 'Cerebro'} agendada para ${existingLead.name} (RUT: ${extractedData.rut || 'N/A'}) el ${requestedTime.toLocaleDateString('es-CL')} a las ${requestedTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}. Sincronizado en HubSpot.`;
+    const newNot = {
+      id: "not-" + Math.random().toString(36).substring(2, 9),
+      title: "Cita Agendada (GravityMed)",
+      message: notMsg,
+      type: "urgent" as const,
+      read: false,
+      timestamp: new Date().toISOString()
+    };
+    database.notifications = [newNot, ...database.notifications];
+
+    // Push updated lead info to HubSpot CRM
+    pushLeadToHubSpot(existingLead).catch(e => {
+      console.error("[HubSpot Sync Error] Failed background sync:", e);
+    });
+
+    const timeStr = requestedTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = requestedTime.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    return `✅ *¡Examen Agendado Exitosamente!*\n\nHola *${existingLead.name}*, confirmamos tu hora para una *Resonancia de ${extractedData.exam || 'Cerebro'}*:\n\n📅 *Fecha:* ${dateStr}\n⏰ *Hora:* ${timeStr}\n📍 *Dirección:* Calle 2 norte 1334, Talca (GravityMed)\n\n*Datos Registrados en CRM:*\n- RUT: ${extractedData.rut || 'N/A'}\n- Correo: ${existingLead.email}\n- Teléfono: ${existingLead.phone}\n- Previsión: ${extractedData.insurance || 'Particular'}\n\nTe hemos enviado un correo de confirmación y recibirás una notificación de recordatorio. ¡Que tengas un excelente día!`;
+  }
+
+  // If lead info was updated but we are not scheduling yet, we sync with HubSpot in background too
+  if (leadUpdated) {
+    pushLeadToHubSpot(existingLead).catch(e => {
+      console.error("[HubSpot Sync Error] Failed background sync:", e);
+    });
+  }
+
+  return null;
 }
 
 // 1. Health Endpoint
@@ -507,27 +707,47 @@ app.post("/api/whatsapp", async (req, res) => {
     // Generate responsive AI message from simulated Bot
     let responseText = "¡Hola! Estoy procesando tu mensaje con nuestra inteligencia artificial empresarial. Para darte la mejor respuesta de inmediato, indícanos tu nombre e interés.";
     
-    // We can simulate bot responding back after short delay (or do it synchronously here using heuristic or Gemini)
-    // For maximum UX, let's call local fallback or Gemini immediately
+    // 1st Priority: Check if there's any scheduling action or client details update to process
+    let schedulingReply: string | null = null;
     try {
-      const ai = getGeminiClient();
-      const systemPrompt = `Eres un chatbot de WhatsApp empresarial (${selectedAgent.name}). Idioma: ${selectedAgent.language}. Responde breve, amable y directo.`;
-      const prompt = `Información de entrenamiento:\n${selectedAgent.trainingData}\n\nMensaje recibido: ${incomingMessage}\nRespuesta de WhatsApp breve con formato:`;
-      const aiResponse = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: prompt,
-        config: {
-          systemInstruction: systemPrompt,
-          temperature: 0.7,
+      schedulingReply = await processSchedulingAndCRM(
+        incomingMessage,
+        conversation.messages.slice(0, -1), // pass history excluding the current message
+        existingLead,
+        selectedAgent.name,
+        selectedAgent.trainingData,
+        selectedAgent.language || "Español",
+        !isMock
+      );
+    } catch (schedErr) {
+      console.error("[Scheduling Engine Error in webhook]:", schedErr);
+    }
+
+    if (schedulingReply) {
+      responseText = schedulingReply;
+    } else {
+      // We can simulate bot responding back after short delay (or do it synchronously here using heuristic or Gemini)
+      // For maximum UX, let's call local fallback or Gemini immediately
+      try {
+        const ai = getGeminiClient();
+        const systemPrompt = `Eres un chatbot de WhatsApp empresarial (${selectedAgent.name}). Idioma: ${selectedAgent.language || 'Español'}. Responde breve, amable y directo.`;
+        const prompt = `Información de entrenamiento:\n${selectedAgent.trainingData}\n\nMensaje recibido: ${incomingMessage}\nRespuesta de WhatsApp breve con formato:`;
+        const aiResponse = await ai.models.generateContent({
+          model: "gemini-3.5-flash",
+          contents: prompt,
+          config: {
+            systemInstruction: systemPrompt,
+            temperature: 0.7,
+          }
+        });
+        responseText = aiResponse.text || responseText;
+      } catch (e) {
+        // Fallback
+        if (selectedAgent.id === "agent-1") {
+          responseText = `¡Hola! Gracias por escribir a GravityMed 🩺. Mi nombre es Elena. En un momento te brindamos toda la información de nuestras resonancias magnéticas y valores Fonasa/Particular. ¿Tus datos de email son correctos?`;
+        } else {
+          responseText = `¡Hola! Gracias por contactarme. Soy ${selectedAgent.name}, tu asistente virtual. He recibido tu mensaje y estoy listo para ayudarte. ¿En qué puedo apoyarte hoy?`;
         }
-      });
-      responseText = aiResponse.text || responseText;
-    } catch (e) {
-      // Fallback
-      if (selectedAgent.id === "agent-1") {
-        responseText = `¡Hola! Gracias por escribir a Inmobiliaria Express 🏠. Mi nombre es Elena. En un momento te brindamos toda la información de Palermo Suites o Lofts Centro. ¿Tus datos de email son correctos?`;
-      } else {
-        responseText = `¡Hola! Gracias por contactarme. Soy ${selectedAgent.name}, tu asistente virtual. He recibido tu mensaje y estoy listo para ayudarte. ¿En qué puedo apoyarte hoy?`;
       }
     }
 
@@ -676,6 +896,73 @@ app.post("/api/chat", async (req, res) => {
        return res.status(404).json({ error: "Agente no encontrado." });
     }
 
+    // Ensure simulated lead exists in the database
+    let existingLead = database.leads.find(l => l.phone === "+56 9 9999 9999");
+    if (!existingLead) {
+      existingLead = {
+        id: "lead-simulated",
+        name: "Usuario Simulado",
+        phone: "+56 9 9999 9999",
+        email: "simulado@gravitymed.cl",
+        status: "Nuevo",
+        notes: "Creado automáticamente para simulación de chat en tiempo real.",
+        timestamp: new Date().toISOString(),
+        agentId: agent.id,
+        score: 3
+      };
+      database.leads = [existingLead, ...database.leads];
+    }
+
+    let conversation = database.conversations.find(c => c.leadId === existingLead?.id);
+    if (!conversation) {
+      conversation = {
+        id: "conv-simulated",
+        leadId: existingLead.id,
+        agentId: agent.id,
+        lastMessageText: message,
+        lastMessageTime: new Date().toISOString(),
+        status: "Open",
+        messages: []
+      };
+      database.conversations = [conversation, ...database.conversations];
+    }
+
+    // Sync conversation history messages from request
+    if (conversationHistory && Array.isArray(conversationHistory)) {
+      conversation.messages = conversationHistory.map((m: any, index: number) => ({
+        id: `msg-sim-${index}`,
+        text: m.text,
+        sender: m.sender,
+        timestamp: new Date().toISOString()
+      }));
+    }
+
+    // Append client message
+    conversation.messages.push({
+      id: `msg-sim-user-${Date.now()}`,
+      text: message,
+      sender: "client",
+      timestamp: new Date().toISOString()
+    });
+    conversation.lastMessageText = message;
+    conversation.lastMessageTime = new Date().toISOString();
+
+    // 1st Priority: Check if there's any scheduling action or client details update to process
+    let schedulingReply: string | null = null;
+    try {
+      schedulingReply = await processSchedulingAndCRM(
+        message,
+        conversation.messages.slice(0, -1),
+        existingLead,
+        agent.name,
+        agent.trainingData,
+        agent.language || "Español",
+        false
+      );
+    } catch (schedErr) {
+      console.error("[Scheduling Engine Error in simulator]:", schedErr);
+    }
+
     // Build chat history structure for Gemini
     const systemPrompt = `Eres un agente de mensajería de WhatsApp para atención automatizada.
 Información del agente:
@@ -690,11 +977,29 @@ ${agent.trainingData}
 Garantiza respuestas breves, amigables, humanas y con formato de WhatsApp (puedes usar negritas con asterisco, emojis, saltos de línea ordenados).
 NUESTRAS PRIORIDADES DE NEGOCIO:
 1. Responder las dudas iniciales.
-2. Capturar los datos de contacto (Nombre, WhatsApp o Teléfono, Email) si aún no los conocemos.
+2. Capturar los datos de contacto (Nombre, RUT, Correo, Teléfono de contacto) si aún no los conocemos.
 3. Si el usuario solicita agendar, invítale a proponer un día y hora concretos.
 4. Si pide hablar con un humano o asesor real, dile que lo derivarás inmediatamente e invita a tener paciencia.
 
 Genera ÚNICAMENTE el texto que el agente debe responder por WhatsApp, sin metadatos ni etiquetas adicionales.`;
+
+    let responseText = "";
+
+    if (schedulingReply) {
+      responseText = schedulingReply;
+      
+      // Append bot response to the simulated conversation log
+      conversation.messages.push({
+        id: `msg-sim-bot-${Date.now()}`,
+        text: responseText,
+        sender: "agent",
+        timestamp: new Date().toISOString()
+      });
+      conversation.lastMessageText = responseText;
+      conversation.lastMessageTime = new Date().toISOString();
+      
+      return res.json({ response: responseText.trim() });
+    }
 
     try {
       const ai = getGeminiClient();
@@ -715,7 +1020,18 @@ Genera ÚNICAMENTE el texto que el agente debe responder por WhatsApp, sin metad
         }
       });
 
-      const responseText = aiResponse.text || "Entendido. ¿Me podrías brindar más detalles?";
+      responseText = aiResponse.text || "Entendido. ¿Me podrías brindar más detalles?";
+      
+      // Append bot response
+      conversation.messages.push({
+        id: `msg-sim-bot-${Date.now()}`,
+        text: responseText,
+        sender: "agent",
+        timestamp: new Date().toISOString()
+      });
+      conversation.lastMessageText = responseText;
+      conversation.lastMessageTime = new Date().toISOString();
+
       return res.json({ response: responseText.trim() });
 
     } catch (geminiErr: any) {
@@ -727,18 +1043,30 @@ Genera ÚNICAMENTE el texto que el agente debe responder por WhatsApp, sin metad
       const lowerMsg = message.toLowerCase();
       if (lowerMsg.includes("precio") || lowerMsg.includes("costo") || lowerMsg.includes("cuanto cuesta")) {
         if (agentId === "agent-1") {
-          fallbackText = "Nuestros desarrollos inmobiliarios en Palermo Suites inician desde los *$85,000 USD* con acabados premium, y los Lofts centrales amoblados en alquiler desde *$600 USD/mes*. ¿Te gustaría agendar una videollamada para revisar el catálogo?";
+          fallbackText = "En GravityMed Talca 🩺, las resonancias magnéticas de cerebro tienen un valor de *$180.000 Particular* y *$90.000 FONASA*, y las resonancias de columna tienen un valor de *$170.000 Particular* y *$85.000 FONASA*. ¿Te gustaría agendar una hora para tu examen?";
         } else {
           fallbackText = "¡Por supuesto! En la clínica contamos con Limpieza de Ultrasonido a *$40 USD* y Blanqueamiento LED a *$120 USD* con promoción especial 2x1 esta semana. ¿Prefieres agendar por la mañana o por la tarde?";
         }
       } else if (lowerMsg.includes("visita") || lowerMsg.includes("cita") || lowerMsg.includes("agendar") || lowerMsg.includes("horario")) {
-        fallbackText = "¡Claro! Me encantaría agendar tu hora. ¿Qué te parece coordinar una cita? Compárteme tu *Nombre Completo, Teléfono e Email* y el día de tu preferencia para reservar de inmediato en nuestro Google Calendar.";
+        fallbackText = "¡Claro! Me encantaría agendar tu hora. ¿Qué te parece coordinar una cita? Compárteme tu *Nombre Completo, Teléfono, RUT e Email* y el día de tu preferencia para reservar de inmediato.";
       } else if (lowerMsg.includes("humano") || lowerMsg.includes("persona") || lowerMsg.includes("asesor") || lowerMsg.includes("hablar")) {
         fallbackText = "De acuerdo. Estoy enviando una Alerta Urgente al Panel de Control para que uno de nuestros asesores humanos tome el control de este chat de WhatsApp. ¡Por favor espera un minuto!";
       }
 
+      responseText = fallbackText;
+      
+      // Append bot response
+      conversation.messages.push({
+        id: `msg-sim-bot-${Date.now()}`,
+        text: responseText,
+        sender: "agent",
+        timestamp: new Date().toISOString()
+      });
+      conversation.lastMessageText = responseText;
+      conversation.lastMessageTime = new Date().toISOString();
+
       return res.json({ 
-        response: fallbackText,
+        response: responseText.trim(),
         isFallback: true,
         warning: "Operando en modo de respuesta simulado local por GEMINI_API_KEY no ingresado aún en secretos."
       });

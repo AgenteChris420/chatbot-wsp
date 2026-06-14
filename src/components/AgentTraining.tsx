@@ -110,55 +110,108 @@ Definición de Valores Empresariales (${cleanName}):
 - Captura de Lead: Pedir Nombre, RUT, correo, teléfono y guardarlo en el CRM para agendar citas de resonancia.`;
   };
 
-  const startFileScan = (file: File) => {
+  const startFileScan = async (file: File) => {
     setScanningFile(file.name);
-    setScanProgress(5);
-    setScanStep('Leyendo archivo binario de WhatsApp...');
+    setScanProgress(10);
+    setScanStep('Leyendo archivo PDF...');
     
     const fileSizeStr = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
     
-    let progress = 5;
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 18) + 5;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
+    try {
+      // Step 1: Load PDF.js dynamically from CDN
+      setScanProgress(30);
+      setScanStep('Cargando motor de escaneo PDF...');
+      if (!(window as any).pdfjsLib) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('No se pudo cargar el motor PDF.js de la CDN.'));
+          document.head.appendChild(script);
+        });
+      }
+      
+      // Step 2: Read PDF ArrayBuffer
+      setScanProgress(50);
+      setScanStep('Analizando estructura del documento...');
+      const arrayBuffer = await file.arrayBuffer();
+      
+      const pdfjsLib = (window as any)['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+      
+      // Step 3: Load document
+      setScanProgress(70);
+      setScanStep('Extrayendo texto y tablas...');
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      
+      let fullText = `\n\n--- DOCUMENTO MEMORIA PDF: ${file.name} ---\nFecha de Escaneo por IA: ${new Date().toLocaleDateString()}\n`;
+      let textFound = false;
+      
+      for (let i = 1; i <= pdf.numPages; i++) {
+        setScanStep(`Procesando página ${i} de ${pdf.numPages}...`);
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
         
-        const scannedText = generateSimulatedPDFExtract(file.name);
+        // Extract text items and preserve basic vertical alignment/spacing
+        let lastY = -1;
+        let pageText = '';
+        for (const item of textContent.items as any[]) {
+          if (lastY !== -1 && Math.abs(item.transform[5] - lastY) > 5) {
+            pageText += '\n';
+          } else if (pageText.length > 0 && !pageText.endsWith('\n')) {
+            pageText += ' ';
+          }
+          pageText += item.str;
+          lastY = item.transform[5];
+        }
         
-        const newFile: TrainingFile = {
-          id: 'file-' + Math.random().toString(36).substring(2, 9),
-          name: file.name,
-          size: fileSizeStr,
-          uploadedAt: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
-          charCount: scannedText.length,
-          extractedText: scannedText
-        };
-        
-        setAgentFiles(prev => [...prev, newFile]);
-        setAgentTraining(prev => prev + scannedText);
-
-        setScanningFile(null);
-        setScanProgress(0);
-        setScanStep('');
-        onAddNotification(
-          "Documento Indexado", 
-          `Se procesó "${file.name}" exitosamente con Gemini AI y se integró a la base de conocimientos.`, 
-          "lead"
-        );
-      } else {
-        setScanProgress(progress);
-        if (progress > 80) {
-          setScanStep('Sintetizando base de conocimientos empresarial...');
-        } else if (progress > 52) {
-          setScanStep('Analizando tablas de precios y catálogos...');
-        } else if (progress > 27) {
-          setScanStep('Decodificando estructura del documento y capas de texto...');
-        } else {
-          setScanStep('Estableciendo conexión segura OCR...');
+        if (pageText.trim()) {
+          textFound = true;
+          fullText += `[Página ${i}]\n${pageText}\n`;
         }
       }
-    }, 350);
+      
+      if (!textFound) {
+        // Fallback: If no text was found, it could be an image-only (scanned) PDF.
+        // We will generate the simulated extract, but warn the user.
+        fullText += `\n[Nota: Este PDF es escaneado/imagen sin capa de texto. Se aplicó análisis de compatibilidad]\n`;
+        fullText += generateSimulatedPDFExtract(file.name);
+        onAddNotification(
+          "PDF Escaneado (Imagen)", 
+          `"${file.name}" parece no tener capa de texto (es una imagen). Se usaron datos de plantilla. Para mejores resultados, usa un PDF con texto copiable.`, 
+          "urgent"
+        );
+      } else {
+        setScanProgress(100);
+        setScanStep('¡Indexación completada!');
+        onAddNotification(
+          "Documento Indexado", 
+          `Se procesó "${file.name}" de forma real y se integró a la base de conocimientos.`, 
+          "lead"
+        );
+      }
+      
+      const newFile: TrainingFile = {
+        id: 'file-' + Math.random().toString(36).substring(2, 9),
+        name: file.name,
+        size: fileSizeStr,
+        uploadedAt: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+        charCount: fullText.length,
+        extractedText: fullText
+      };
+      
+      setAgentFiles(prev => [...prev, newFile]);
+      setAgentTraining(prev => prev + fullText);
+      
+    } catch (error: any) {
+      console.error(error);
+      onAddNotification("Error de Lectura", `No se pudo extraer el texto de "${file.name}": ${error.message}`, "urgent");
+    } finally {
+      setScanningFile(null);
+      setScanProgress(0);
+      setScanStep('');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

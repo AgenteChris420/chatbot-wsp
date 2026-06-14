@@ -189,8 +189,10 @@ export default function CalendarScheduler({
           ) : (
             <form onSubmit={handleCreateAppointment} className="space-y-4 text-xs">
               <div className="space-y-1">
-                <label className="font-semibold text-gray-700">Seleccionar Cliente Potential</label>
+                <label htmlFor="lead-select" className="font-semibold text-gray-700">Seleccionar Cliente Potential</label>
                 <select
+                  id="lead-select"
+                  title="Seleccionar Cliente Potential"
                   value={leadId}
                   onChange={(e) => setLeadId(e.target.value)}
                   className="w-full text-xs border border-gray-200 outline-none p-3 rounded-xl bg-gray-50/50"
@@ -205,9 +207,11 @@ export default function CalendarScheduler({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="font-semibold text-gray-700">Fecha de Cita</label>
+                  <label htmlFor="appt-date" className="font-semibold text-gray-700">Fecha de Cita</label>
                   <input
+                    id="appt-date"
                     type="date"
+                    title="Fecha de Cita"
                     value={apptDate}
                     onChange={(e) => setApptDate(e.target.value)}
                     required
@@ -215,9 +219,11 @@ export default function CalendarScheduler({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="font-semibold text-gray-700">Hora Pactada</label>
+                  <label htmlFor="appt-time" className="font-semibold text-gray-700">Hora Pactada</label>
                   <input
+                    id="appt-time"
                     type="time"
+                    title="Hora Pactada"
                     value={apptTime}
                     onChange={(e) => setApptTime(e.target.value)}
                     required
@@ -294,6 +300,8 @@ export default function CalendarScheduler({
               <button
                 type="button"
                 onClick={handlePrevMonth}
+                title="Mes Anterior"
+                aria-label="Mes Anterior"
                 className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-slate-600 border border-slate-200/50 bg-white shadow-3xs flex items-center justify-center"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -304,6 +312,8 @@ export default function CalendarScheduler({
               <button
                 type="button"
                 onClick={handleNextMonth}
+                title="Mes Siguiente"
+                aria-label="Mes Siguiente"
                 className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-slate-600 border border-slate-200/50 bg-white shadow-3xs flex items-center justify-center"
               >
                 <ChevronRight className="w-4 h-4" />

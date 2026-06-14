@@ -215,9 +215,9 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
               {isTyping && (
                 <div className="self-start flex flex-col items-start max-w-[80%]">
                   <div className="p-3 bg-slate-900 rounded-2xl rounded-tl-none border border-slate-850 flex items-center space-x-1.5 py-2.5">
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce anim-delay-0"></span>
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce anim-delay-150"></span>
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce anim-delay-300"></span>
                   </div>
                 </div>
               )}
@@ -237,6 +237,8 @@ export default function LandingPage({ onGoToApp }: LandingPageProps) {
               <button
                 type="submit"
                 disabled={isTyping || !inputText.trim()}
+                title="Enviar mensaje"
+                aria-label="Enviar mensaje"
                 className="w-9 h-9 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-850 text-white rounded-full flex items-center justify-center transition shrink-0 cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />

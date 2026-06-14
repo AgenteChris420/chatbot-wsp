@@ -163,6 +163,38 @@ export default function Dashboard({ leads, agents, conversations, appointments }
               if (status === "Especial") color = "bg-emerald-500";
               if (status === "Perdido") color = "bg-rose-400";
 
+              // Map dynamic width to standard Tailwind classes to avoid inline styles
+              const getWidthClass = (pct: number) => {
+                if (!pct || pct <= 0) return 'w-0';
+                if (pct >= 100) return 'w-full';
+                const rounded = Math.round(pct / 5) * 5;
+                const clamped = Math.max(5, Math.min(95, rounded));
+                const mapping: Record<number, string> = {
+                  5: 'w-[5%]',
+                  10: 'w-[10%]',
+                  15: 'w-[15%]',
+                  20: 'w-[20%]',
+                  25: 'w-[25%]',
+                  30: 'w-[30%]',
+                  35: 'w-[35%]',
+                  40: 'w-[40%]',
+                  45: 'w-[45%]',
+                  50: 'w-[50%]',
+                  55: 'w-[55%]',
+                  60: 'w-[60%]',
+                  65: 'w-[65%]',
+                  70: 'w-[70%]',
+                  75: 'w-[75%]',
+                  80: 'w-[80%]',
+                  85: 'w-[85%]',
+                  90: 'w-[90%]',
+                  95: 'w-[95%]'
+                };
+                return mapping[clamped] || 'w-[5%]';
+              };
+
+              const widthClass = getWidthClass(percent || 2);
+
               return (
                 <div key={status} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
@@ -176,8 +208,7 @@ export default function Dashboard({ leads, agents, conversations, appointments }
                   </div>
                   <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full ${color} transition-all duration-1000`} 
-                      style={{ width: `${percent || 2}%` }}
+                      className={`h-full ${color} ${widthClass} transition-all duration-1000`} 
                     />
                   </div>
                 </div>

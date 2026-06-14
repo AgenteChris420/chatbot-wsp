@@ -560,6 +560,20 @@ async function sendWhatsAppMessage(phoneId: string, to: string, text: string) {
   }
 }
 
+// Helper to compare phone numbers robustly, handling country codes, formatting, and the Chilean mobile '9' prefix discrepancy.
+function matchPhoneNumbers(p1: string, p2: string): boolean {
+  if (!p1 || !p2) return false;
+  const clean1 = p1.replace(/[^0-9]/g, '');
+  const clean2 = p2.replace(/[^0-9]/g, '');
+  
+  if (clean1.length < 8 || clean2.length < 8) return false;
+  
+  // Extract last 8 digits (standard subscriber number in Chile)
+  const suffix1 = clean1.slice(-8);
+  const suffix2 = clean2.slice(-8);
+  return suffix1 === suffix2;
+}
+
 // POST Endpoint for receiving WhatsApp Business API Webhooks (Real and Mock Simulator)
 app.post("/api/whatsapp", async (req, res) => {
   try {
@@ -617,11 +631,9 @@ app.post("/api/whatsapp", async (req, res) => {
 
     // 1st Priority: Match by specific recipient WhatsApp phone number
     if (recipientNumber) {
-      const cleanRecipient = recipientNumber.replace(/[^0-9]/g, '');
       const matchedAgent = database.agents.find(a => {
         if (!a.whatsappNumber) return false;
-        const cleanAgentNum = a.whatsappNumber.replace(/[^0-9]/g, '');
-        return cleanAgentNum.includes(cleanRecipient) || cleanRecipient.includes(cleanAgentNum);
+        return matchPhoneNumbers(a.whatsappNumber, recipientNumber);
       });
       if (matchedAgent) {
         selectedAgent = matchedAgent;
@@ -631,11 +643,7 @@ app.post("/api/whatsapp", async (req, res) => {
     }
 
     // Look if lead already exists
-    let existingLead = database.leads.find(l => {
-      const cleanDb = l.phone.replace(/[^0-9]/g, '');
-      const cleanIn = customerPhone.replace(/[^0-9]/g, '');
-      return cleanDb.includes(cleanIn) || cleanIn.includes(cleanDb);
-    });
+    let existingLead = database.leads.find(l => matchPhoneNumbers(l.phone, customerPhone));
 
     if (existingLead) {
       // If we matched the agent by number, keep it as it's the specific department. Otherwise, fall back to historical lead assignment

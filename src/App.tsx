@@ -23,6 +23,7 @@ import ConversationLogs from './components/ConversationLogs';
 import CalendarScheduler from './components/CalendarScheduler';
 import UserRoles from './components/UserRoles';
 import LandingPage from './components/LandingPage';
+import WhatsAppMetaConnection from './components/WhatsAppMetaConnection';
 
 // Import our Firestore and Firebase Auth configurations
 import { db, auth, testConnection, handleFirestoreError } from './firebase';
@@ -475,6 +476,20 @@ export default function App() {
               <span>Roles de Acceso</span>
             </button>
 
+            {isAdmin && (
+              <button
+                onClick={() => { setActiveTab('meta'); setNotificationsOpen(false); }}
+                className={`flex items-center gap-3 w-full p-3 text-sm font-medium rounded-lg transition-all text-left cursor-pointer ${
+                  activeTab === 'meta' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Smartphone className="w-4 h-4 shrink-0" />
+                <span>Conexión Meta</span>
+              </button>
+            )}
+
 
 
             {/* Current entity container visual decoration */}
@@ -665,6 +680,14 @@ export default function App() {
               <UserRoles 
                 users={users}
                 onSaveUsers={handleSaveUsers}
+                onAddNotification={handleAddNotification}
+              />
+            )}
+
+            {activeTab === 'meta' && (
+              <WhatsAppMetaConnection 
+                agents={agents}
+                onSaveAgents={handleSaveAgents}
                 onAddNotification={handleAddNotification}
               />
             )}
